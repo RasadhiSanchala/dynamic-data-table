@@ -6,6 +6,8 @@ import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import ManageColumnsModal from "./ManageColumnsModal";
+import ExportCSV from "./ExportCSV";
+
 
 const DataTable: React.FC = () => {
     const { data, visibleColumns } = useSelector((state: RootState) => state.table);
@@ -51,6 +53,10 @@ const DataTable: React.FC = () => {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
             />
+            <Button variant="outlined" onClick={() => setOpenModal(true)}>
+                Manage Columns
+            </Button>
+            <ExportCSV />
             <div style={{ height: 500, width: "100%" }}>
                 <DataGrid
                     rows={filteredRows}
