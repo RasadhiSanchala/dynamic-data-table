@@ -42,7 +42,7 @@ const DataTable: React.FC = () => {
             >
                 Manage Columns
             </Button>
-
+  <ExportCSV />
             <ManageColumnsModal open={openModal} onClose={() => setOpenModal(false)} />
             <TextField
                 label="Search"
@@ -53,10 +53,6 @@ const DataTable: React.FC = () => {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
             />
-            <Button variant="outlined" onClick={() => setOpenModal(true)}>
-                Manage Columns
-            </Button>
-            <ExportCSV />
             <div style={{ height: 500, width: "100%" }}>
                 <DataGrid
                     rows={filteredRows}
