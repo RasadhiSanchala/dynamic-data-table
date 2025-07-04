@@ -7,6 +7,8 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import ManageColumnsModal from "./ManageColumnsModal";
 import ExportCSV from "./ExportCSV";
+import ImportCSV from "./ImportCSV";
+
 
 
 const DataTable: React.FC = () => {
@@ -22,7 +24,7 @@ const DataTable: React.FC = () => {
         editable: false,
     }));
 
-    // Filter rows based on search term
+  
     const filteredRows = useMemo(() => {
         if (!searchTerm) return data;
 
@@ -42,7 +44,8 @@ const DataTable: React.FC = () => {
             >
                 Manage Columns
             </Button>
-  <ExportCSV />
+            <ExportCSV />
+            <ImportCSV />
             <ManageColumnsModal open={openModal} onClose={() => setOpenModal(false)} />
             <TextField
                 label="Search"
