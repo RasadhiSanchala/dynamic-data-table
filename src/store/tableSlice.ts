@@ -5,11 +5,13 @@ import type { TableRow } from "../types";
 interface TableState {
   data: TableRow[];
   visibleColumns: string[];
+  allColumns: string[]; // ADD THIS LINE
 }
 
 const initialState: TableState = {
   data: [],
-  visibleColumns: ["name", "email", "age", "role"],
+  visibleColumns: ["id","name", "email", "age", "role"],
+  allColumns: ["id","name", "email", "age", "role"], // ADD THIS LINE
 };
 
 export const tableSlice = createSlice({
@@ -21,6 +23,9 @@ export const tableSlice = createSlice({
     },
     setVisibleColumns: (state, action: PayloadAction<string[]>) => {
       state.visibleColumns = action.payload;
+    },
+    addColumn: (state, action: PayloadAction<string>) => {
+      state.allColumns.push(action.payload);
     },
     addRow: (state, action: PayloadAction<TableRow>) => {
       state.data.push(action.payload);
@@ -40,6 +45,7 @@ export const tableSlice = createSlice({
 export const {
   setData,
   setVisibleColumns,
+  addColumn,
   addRow,
   updateRow,
   deleteRow,
