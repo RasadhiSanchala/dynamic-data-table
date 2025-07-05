@@ -82,9 +82,11 @@ const DataTable: React.FC = () => {
   }, [searchTerm, data, visibleColumns]);
 
   // Merge edited data in editRows with original rows for display
-  const displayedRows = filteredRows.map((row) =>
+  let displayedRows = filteredRows.map((row) =>
     editRows[row.id] ? { ...row, ...editRows[row.id] } : row
   );
+  // Defensive: ensure every row has a string id
+  displayedRows = displayedRows.map((row) => ({ ...row, id: String(row.id) }));
 
   // Handle inline cell edits for "Save All" batch editing
   const handleCellEditStop: GridEventListener<"cellEditStop"> = (params) => {
