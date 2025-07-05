@@ -6,7 +6,7 @@ import Papa from "papaparse";  // <-- Correct import here
 import type { ParseResult } from "papaparse";
 import type { TableRow } from "../types";
 
-const requiredColumns = ["id", "name", "email", "age", "role"];
+const requiredColumns = ["id" ,"name", "email", "age", "role"];
 
 const ImportCSV: React.FC = () => {
   const dispatch = useDispatch();
