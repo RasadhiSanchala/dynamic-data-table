@@ -4,5 +4,5 @@ export interface TableRow {
   email: string;
   age: number;
   role: string;
-  [key: string]: string | number; 
+  [key: string]: string | number;
 }
