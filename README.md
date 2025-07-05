@@ -1,6 +1,6 @@
 # Dynamic Data Table Manager
 
-A professional, dynamic data table manager built with **Next.js 14 (App Router)**, **Redux Toolkit**, **Material UI (v5+)**, and **TypeScript**. This project demonstrates advanced skills in dynamic UIs, state management, and real-world features such as import/export, searching, sorting, inline editing, and more.
+A professional, dynamic data table manager built with React 18, Redux Toolkit, Material UI (v5+), and TypeScript. This project demonstrates advanced skills in dynamic UIs, state management, and real-world features such as import/export, searching, sorting, inline editing, and more.
 
 ---
 
