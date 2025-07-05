@@ -59,3 +59,4 @@ const ManageColumnsModal: React.FC<Props> = ({ open, onClose }) => {
 };
 
 export default ManageColumnsModal;
+
