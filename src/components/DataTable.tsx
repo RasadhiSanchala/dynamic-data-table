@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import type { RootState } from "../store";
+import { useThemeMode } from "../theme/themeProvider";
 import type { GridRowModel, GridEventListener } from "@mui/x-data-grid";
 import { DataGrid } from "@mui/x-data-grid";
 import TextField from "@mui/material/TextField";
@@ -31,14 +32,15 @@ import DarkModeIcon from "@mui/icons-material/DarkMode";
 const DataTable: React.FC = () => {
   const dispatch = useDispatch();
   const theme = useTheme();
+  const { mode, toggleMode } = useThemeMode();
+
+
   const { data, visibleColumns } = useSelector((state: RootState) => state.table);
   const [searchTerm, setSearchTerm] = useState("");
   const [editRows, setEditRows] = useState<{ [id: string]: GridRowModel }>({});
   const [selectedEditRow, setSelectedEditRow] = useState<TableRow | null>(null);
   const [openModal, setOpenModal] = useState(false);
-  const [darkMode, setDarkMode] = useState(false);
 
-  // Columns generated from visibleColumns with custom header and cell rendering
   const columns = visibleColumns.map((col) => ({
     field: col,
     headerName: col.charAt(0).toUpperCase() + col.slice(1),
@@ -71,7 +73,7 @@ const DataTable: React.FC = () => {
     headerClassName: "mui-gradient-header",
   }));
 
-  // Filter data based on search term across visible columns
+
   const filteredRows = useMemo(() => {
     if (!searchTerm) return data;
     return data.filter((row) =>
@@ -81,14 +83,14 @@ const DataTable: React.FC = () => {
     );
   }, [searchTerm, data, visibleColumns]);
 
-  // Merge edited data in editRows with original rows for display
+
   let displayedRows = filteredRows.map((row) =>
     editRows[row.id] ? { ...row, ...editRows[row.id] } : row
   );
-  // Defensive: ensure every row has a string id
+ 
   displayedRows = displayedRows.map((row) => ({ ...row, id: String(row.id) }));
 
-  // Handle inline cell edits for "Save All" batch editing
+
   const handleCellEditStop: GridEventListener<"cellEditStop"> = (params) => {
     if (!params) return;
     const { id, field, value } = params;
@@ -103,7 +105,7 @@ const DataTable: React.FC = () => {
     }));
   };
 
-  // Save all inline edits after validation
+
   const handleSaveAll = () => {
     for (const rowEdits of Object.values(editRows)) {
       if ("age" in rowEdits && isNaN(Number(rowEdits.age))) {
@@ -116,28 +118,27 @@ const DataTable: React.FC = () => {
     );
     dispatch({ type: "table/setData", payload: newData });
     setEditRows({});
-    // Use a Snackbar or toast for better UX
+ 
   };
 
-  // Cancel all inline edits
+  
   const handleCancelAll = () => {
     setEditRows({});
-    // Use a Snackbar or toast for better UX
+    
   };
 
-  // Open inline edit row for a specific row
+
   const handleRowEditClick = (row: TableRow) => {
     setSelectedEditRow(row);
   };
 
-  // Save from InlineEditRow component
+  
   const handleInlineSave = (updatedRow: TableRow) => {
     dispatch({ type: "table/updateRow", payload: updatedRow });
     setSelectedEditRow(null);
-    // Use a Snackbar or toast for better UX
+    
   };
 
-  // Cancel inline row editing
   const handleInlineCancel = () => {
     setSelectedEditRow(null);
   };
@@ -154,7 +155,7 @@ const DataTable: React.FC = () => {
         transition: "background 0.3s",
       }}
     >
-      {/* Top bar with stats and theme toggle */}
+   
       <Stack direction="row" spacing={2} alignItems="center" mb={2} sx={{ flexWrap: "wrap" }}>
         <TableViewIcon color="primary" />
         <Typography variant="h6" component="span" fontWeight="bold">
@@ -167,18 +168,18 @@ const DataTable: React.FC = () => {
           variant="outlined"
         />
         <Box flex={1} />
-        {/* Theme toggle (for illustration, wire to app theme context in real app) */}
+   
         <Tooltip title="Toggle light/dark mode">
           <Fab
             size="small"
             color="secondary"
-            onClick={() => setDarkMode((prev) => !prev)}
+            onClick={toggleMode}
             sx={{ ml: 2 }}
           >
-            {darkMode ? <LightModeIcon /> : <DarkModeIcon />}
+            {mode === "dark" ? <LightModeIcon /> : <DarkModeIcon />}
           </Fab>
         </Tooltip>
-        {/* Import/Export hint */}
+     
         <Tooltip title="Import/Export CSV">
           <Fab color="primary" size="small" sx={{ ml: 2 }}>
             <ImportExportIcon />
@@ -186,7 +187,7 @@ const DataTable: React.FC = () => {
         </Tooltip>
       </Stack>
 
-      {/* Search and Actions */}
+
       <Box display="flex" gap={2} mb={2} flexWrap="wrap" alignItems="center">
         <TextField
           label="Search"
@@ -250,7 +251,6 @@ const DataTable: React.FC = () => {
         </Tooltip>
       </Box>
 
-      {/* DataGrid with custom styles */}
       <Box
         sx={{
           height: { xs: 400, md: 500 },
@@ -258,14 +258,22 @@ const DataTable: React.FC = () => {
           bgcolor: "#fff",
           borderRadius: 3,
           boxShadow: 2,
+  
           "& .mui-gradient-header": {
-            background: "linear-gradient(90deg, #1976d2 0%, #42a5f5 100%)",
-            color: "#fff",
-            fontWeight: "bold",
+            background: theme.palette.mode === "dark" ? "#151c24" : "#f6f9fb",
+            color: theme.palette.text.primary,
+            fontWeight: 600,
             fontSize: "1.05rem",
             letterSpacing: 1,
             borderTopLeftRadius: 8,
             borderTopRightRadius: 8,
+            borderBottom: `2px solid ${theme.palette.divider}`,
+            boxShadow: "none",
+          },
+          "& .MuiDataGrid-columnHeaders": {
+            borderTop: `1px solid ${theme.palette.divider}`,
+            borderBottom: `2px solid ${theme.palette.divider}`,
+            background: theme.palette.mode === "dark" ? "#151c24" : "#f6f9fb",
           },
           "& .MuiDataGrid-row:hover": {
             background: theme.palette.mode === "dark" ? "#1e2738" : "#e3f2fd",
@@ -314,7 +322,6 @@ const DataTable: React.FC = () => {
         />
       </Box>
 
-      {/* Animated inline edit slide-in */}
       <Slide direction="up" in={!!selectedEditRow} mountOnEnter unmountOnExit>
         <Paper
           elevation={6}
