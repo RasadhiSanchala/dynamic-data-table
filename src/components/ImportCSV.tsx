@@ -2,11 +2,14 @@ import React, { useRef } from "react";
 import { useDispatch } from "react-redux";
 import { setData } from "../store/tableSlice";
 import { Button } from "@mui/material";
-import Papa from "papaparse";  // <-- Correct import here
+import Papa from "papaparse";
 import type { ParseResult } from "papaparse";
 import type { TableRow } from "../types";
 
-const requiredColumns = ["id" ,"name", "email", "age", "role"];
+// Use nanoid for unique id generation
+import { nanoid } from "@reduxjs/toolkit";
+
+const requiredColumns = ["id", "name", "email", "age", "role"];
 
 const ImportCSV: React.FC = () => {
   const dispatch = useDispatch();
@@ -20,7 +23,7 @@ const ImportCSV: React.FC = () => {
       header: true,
       skipEmptyLines: true,
       complete: (results: ParseResult<TableRow>) => {
-        const parsedData = results.data;
+        let parsedData = results.data;
 
         const columns = results.meta.fields;
         if (!columns || !requiredColumns.every((col) => columns.includes(col))) {
@@ -29,6 +32,17 @@ const ImportCSV: React.FC = () => {
           );
           return;
         }
+
+        // Ensure every row has a unique and non-empty id (string)
+        const seenIds = new Set<string>();
+        parsedData = parsedData.map((row) => {
+          let id = row.id?.toString().trim() || "";
+          if (!id || seenIds.has(id)) {
+            id = nanoid();
+          }
+          seenIds.add(id);
+          return { ...row, id };
+        });
 
         dispatch(setData(parsedData));
         alert("CSV imported successfully!");
